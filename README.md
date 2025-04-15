@@ -17,11 +17,13 @@ Scripts simples y efectivos para liberar recursos rápidamente en situaciones cr
 
 Este repositorio proporciona scripts rápidos para emergencias cuando el sistema está saturado. Cierran forzosamente procesos críticos como navegadores, IDEs, herramientas de comunicación, y opcionalmente reinician interfaces gráficas o el explorador de archivos.
 
+---
+
 ## Script para Linux
 
 ### meltdown.sh
 
-Este script fuerza el cierre de procesos pesados, limpia cachés del sistema, reinicia interfaces gráficas y libera memoria.
+Este script ejecuta una secuencia de cierre inmediata de procesos pesados como navegadores (Chrome, Firefox, Brave), herramientas de desarrollo (Node, VSCode) y comunicación (Slack, Discord, Teams, Zoom). Posteriormente, limpia cachés del sistema, reinicia el administrador de archivos y opcionalmente la interfaz gráfica.
 
 ### Configuración y uso (Linux)
 
@@ -43,7 +45,7 @@ sudo visudo
 - Agrega al final:
 
 ```
-tu_usuario ALL=(ALL) NOPASSWD: /usr/bin/sync, /usr/bin/tee, /usr/bin/pkill, /usr/bin/docker, /usr/bin/swapoff, /usr/bin/swapon
+tu_usuario ALL=(ALL) NOPASSWD: /usr/bin/sync, /usr/bin/tee, /usr/bin/pkill
 ```
 
 ### Crear un atajo de teclado en Linux
@@ -61,7 +63,7 @@ tu_usuario ALL=(ALL) NOPASSWD: /usr/bin/sync, /usr/bin/tee, /usr/bin/pkill, /usr
     - Comando: `/ruta/completa/meltdown.sh`
     - Asignar tecla: Ej. `Alt+F4`
 
-Ahora, al presionar `Alt+F4` (u otra tecla asignada), se ejecutará inmediatamente el script para liberar recursos.
+Ahora, al presionar la tecla asignada, se ejecutará inmediatamente el script.
 
 ---
 
@@ -69,29 +71,26 @@ Ahora, al presionar `Alt+F4` (u otra tecla asignada), se ejecutará inmediatamen
 
 ### meltdown.bat
 
-Este script fuerza el cierre inmediato de procesos pesados en Windows como Chrome, Node, Slack, Teams, Zoom, etc. Opcionalmente reinicia `explorer.exe`.
+Este script fuerza el cierre inmediato de procesos pesados en Windows como Chrome, Node, Slack, Teams, Zoom, Firefox, Brave, y VSCode. Opcionalmente permite reiniciar `explorer.exe`.
 
 ### Configuración y uso (Windows)
 
 1. **Ubicación del script:**
-- Crea una carpeta fácil, ej. `C:\Scripts`.
+- Crea una carpeta, por ejemplo `C:\Scripts`.
 - Guarda allí `meltdown.bat`.
 
 ```batch
 @echo off
-taskkill /IM chrome.exe /F
-taskkill /IM node.exe /F
-taskkill /IM slack.exe /F
-taskkill /IM discord.exe /F
-taskkill /IM teams.exe /F
-taskkill /IM zoom.exe /F
-taskkill /IM firefox.exe /F
-taskkill /IM brave.exe /F
-taskkill /IM code.exe /F
+set PROCESOS=chrome.exe node.exe slack.exe discord.exe teams.exe zoom.exe firefox.exe brave.exe code.exe
 
-:: Opcional (reiniciar interfaz)
+for %%P in (%PROCESOS%) do (
+    taskkill /IM %%P /F 2>nul
+)
+
+:: Opcional (reiniciar interfaz gráfica)
 :: taskkill /IM explorer.exe /F
 :: start explorer.exe
+
 exit
 ```
 
